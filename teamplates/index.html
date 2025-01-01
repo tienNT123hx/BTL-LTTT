@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mã hóa Huffman & Shannon-Fano</title>
+</head>
+<body>
+    <h1>Mã hóa Huffman & Shannon-Fano</h1>
+    <textarea id="inputText" rows="5" cols="50" placeholder="Nhập dữ liệu..."></textarea><br><br>
+    <select id="method">
+        <option value="Huffman">Huffman</option>
+        <option value="Shannon-Fano">Shannon-Fano</option>
+    </select><br><br>
+    <button id="encodeBtn">Mã hóa</button>
+    <h2>Kết quả:</h2>
+    <pre id="output"></pre>
+
+    <script>
+        document.getElementById("encodeBtn").addEventListener("click", async () => {
+            const text = document.getElementById("inputText").value;
+            const method = document.getElementById("method").value;
+
+            if (!text) {
+                alert("Vui lòng nhập dữ liệu!");
+                return;
+            }
+
+            const response = await fetch("http://127.0.0.1:5000/encode", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ text, method })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                document.getElementById("output").innerText = 
+                    `Encoded: ${result.encoded}\nCode Map: ${JSON.stringify(result.code_map, null, 2)}`;
+            } else {
+                alert(result.error || "Có lỗi xảy ra!");
+            }
+        });
+    </script>
+</body>
+</html>
